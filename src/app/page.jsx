@@ -3,9 +3,10 @@ import { InfiniteMarquee } from "@/components/animations/InfiniteMarquee";
 import LiquidEther from "@/components/LiquidEther";
 
 function Home() {
+
   return (
     <div>
-      <section className="section-home-hero min-h-screen bg-teal-950">
+      <section className={`section-home-hero min-h-screen bg-[#06291B]`}>
         <div className="hero-container relative w-full min-h-screen flex items-center justify-center">
           <div
               className="w-full h-svh z-1 absolute inset-0">
