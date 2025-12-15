@@ -13,7 +13,7 @@ const frameCount = 122;
 const imagePath = (index) =>
   `/images/vid-frames-1/frame_${String(index).padStart(4, "0")}.png`;
 
-export const ScrollVideoSequence = ({className=''}) => {
+export const ScrollVideoSequence = ({className='', triggerElement = null, pinElement = null}) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const [images, setImages] = useState([]);
@@ -55,6 +55,7 @@ export const ScrollVideoSequence = ({className=''}) => {
     if (images.length === 0 || !context) return;
 
     const canvas = canvasRef.current;
+    if (!canvas) return;
 
     // Set the canvas dimensions to match the first loaded image size for initial ratio
     const firstImage = images[0];
@@ -73,16 +74,35 @@ export const ScrollVideoSequence = ({className=''}) => {
       }
     };
 
+    // Find the parent section element if triggerElement is not provided
+    let trigger = triggerElement;
+    if (!trigger && containerRef.current) {
+      trigger = containerRef.current.closest('section') || containerRef.current;
+    }
+    
+    if (!trigger) return;
+
+    // Determine what element to pin - use pinElement if provided, otherwise try to find a suitable parent
+    let elementToPin = pinElement || containerRef.current;
+    if (!pinElement && containerRef.current) {
+      // Try to find a relatively positioned parent container to pin instead
+      const heroContainer = containerRef.current.closest('.hero-container');
+      if (heroContainer) {
+        elementToPin = heroContainer;
+      }
+    }
+
     // Create the GSAP ScrollTrigger timeline
     const timeline = gsap.timeline({
       scrollTrigger: {
-        trigger: containerRef.current,
+        trigger: trigger,
         start: "top top",
         end: `+=${frameCount * 50}px`, // Adjust scroll length as needed (e.g., 50px per frame)
         scrub: 0.5, // Link scroll position to timeline progress
-        pin: true, // Keep the container pinned in the viewport
+        pin: elementToPin, // Pin the element
         pinSpacing: true,
         markers: false, // Set to true for debugging
+        invalidateOnRefresh: true, // Recalculate on resize
       },
     });
 
@@ -101,9 +121,14 @@ export const ScrollVideoSequence = ({className=''}) => {
 
     // Cleanup function for ScrollTrigger
     return () => {
-      ScrollTrigger.killAll();
+      timeline.kill();
+      ScrollTrigger.getAll().forEach(st => {
+        if (st.vars.trigger === trigger || st.vars.pin === elementToPin) {
+          st.kill();
+        }
+      });
     };
-  }, [images, context]); // Rerun effect when images are loaded
+  }, [images, context, triggerElement, pinElement]); // Rerun effect when images are loaded or trigger changes
 
   return (
     // The container holds the canvas and is the element that gets pinned
