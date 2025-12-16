@@ -59,13 +59,26 @@ export const Hero = () => {
         ease: 'none',
         scrollTrigger: {
           trigger: section1Ref.current,
-          endTrigger: section2Ref.current,
+          // endTrigger: section2Ref.current,
           start: 'top top',
-          end: 'bottom bottom',
+          end: 'bottom top',
           scrub: 1,
         },
       }
     );
+
+    // Crossfade section 2 out as ProductSummary image fades in
+    gsap.to(section2Ref.current, {
+      opacity: 0,
+      scale: 0,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section2Ref.current,
+        start: 'bottom 50%',
+        end: 'bottom 49.999%',
+        scrub: 1,
+      },
+    });
 
     // Fade out ScrollVideoSequence as section 2 bottom crosses mid-screen
     gsap.to('.scroll-video-sequence', {
@@ -73,7 +86,7 @@ export const Hero = () => {
       scrollTrigger: {
         trigger: section2Ref.current,
         start: 'bottom 50%',
-        end: 'bottom 49%',
+        end: 'bottom 50%',
         scrub: 1,
       },
     });
@@ -81,7 +94,7 @@ export const Hero = () => {
 
   return (
     <div className='hero relative min-h-[200vh]'>
-      <div className='hero-bg fixed inset-0 -z-10'>
+      <div className='hero-bg h-screen fixed inset-0 -z-10'>
         <img
           src='/images/hero-bg.png'
           alt='Poka Life hero background'
@@ -113,11 +126,11 @@ export const Hero = () => {
 
       <section
         ref={section2Ref}
-        className='bg-transparent flex flex-col items-center justify-center min-h-screen m-0 p-0 w-full'
+        className='hero-section-2 bg-transparent flex flex-col items-center justify-center min-h-screen m-0 p-0 w-full overflow-x-hidden'
       >
         <div className='w-full min-h-screen flex items-center justify-center m-0 p-0 overflow-x-hidden'>
-          <h1 className='sec-2-header text-white text-[10rem] font-medium uppercase text-center leading-none'>
-            The Ultimate King Coconut Drink
+          <h1 className='text-nowrap sec-2-header text-white text-[10rem] font-medium uppercase text-center leading-none'>
+            The Ultimate <br /> King Coconut <br /> Drink
           </h1>
         </div>
       </section>
