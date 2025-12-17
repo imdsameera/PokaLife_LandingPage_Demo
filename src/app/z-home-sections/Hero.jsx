@@ -6,6 +6,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/all';
 import { useGSAP } from '@gsap/react';
 import { InfiniteMarquee } from '@/components/animations/InfiniteMarquee';
+import Image from 'next/image';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -93,12 +94,16 @@ export const Hero = () => {
   });
 
   return (
-    <div className='hero relative min-h-[200vh]'>
-      <div className='hero-bg h-screen fixed inset-0 -z-10'>
-        <img
+    <div className='hero relative min-h-screen'>
+      <div className='hero-bg fixed inset-0 -z-10 overflow-x-hidden'>
+        <Image
           src='/images/hero-bg.png'
           alt='Poka Life hero background'
-          className='w-full h-full object-cover'
+          width={0}
+          height={0}
+          sizes='100vw'
+          style={{width: '100%', height: 'auto%' }}
+          className='object-cover'
         />
         <div className='absolute inset-0 bg-black/10' />
       </div>
@@ -117,9 +122,9 @@ export const Hero = () => {
       >
         <div className='w-full min-h-screen flex items-center justify-center m-0 p-0'>
           <InfiniteMarquee className='text-marquee'>
-            <h1 className='text-white text-[12rem] font-bold'>Freeze.</h1>
-            <h1 className='text-white text-[12rem] font-bold'>Shake.</h1>
-            <h1 className='text-white text-[12rem] font-bold'>Drink.</h1>
+            <h1 className='text-white text-[15rem] font-medium'>Freeze.</h1>
+            <h1 className='text-white text-[15rem] font-medium'>Shake.</h1>
+            <h1 className='text-white text-[15rem] font-medium'>Drink.</h1>
           </InfiniteMarquee>
         </div>
       </section>

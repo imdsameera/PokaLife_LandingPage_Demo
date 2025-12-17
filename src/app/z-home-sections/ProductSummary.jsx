@@ -4,6 +4,7 @@ import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/all';
 import { useGSAP } from '@gsap/react';
+import Image from 'next/image';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,6 +16,8 @@ export const ProductSummary = () => {
   const limeRef = useRef(null);
   const cranberryBlurredRef = useRef(null);
   const limeBlurredRef = useRef(null);
+  const cranberryTextRef = useRef(null);
+  const limeTextRef = useRef(null);
 
   useGSAP(() => {
     // Fade in the image when Hero's section 2 bottom reaches 50% viewport
@@ -148,15 +151,20 @@ export const ProductSummary = () => {
           ref={imageRef}
           className='fixed inset-0 w-screen h-screen opacity-0 z-50'
         >
-          <img
+          <Image
             src='/images/poka-original-black-bg.png'
             alt='Poka Life original'
+            width={0}
+            height={0}
+            sizes='cover'
+            style={{ width: '100%', height: '100%' }}
             className='w-full h-full object-cover'
           />
         </div>
       </section>
+
       <section
-        className='product-show relative min-h-screen h-screen bg-cover bg-center bg-white pt-15 overflow-visible'
+        className='product-show relative min-h-screen h-screen bg-cover bg-center bg-white pt-15 overflow-x-hidden'
         style={{ backgroundImage: "url('/images/product-summary-img.png')" }}
       >
         <div ref={headerRef} className='product-header'>
@@ -169,29 +177,55 @@ export const ProductSummary = () => {
         </div>
 
         {/* Decorative fruits */}
-        <img
+        <Image
           ref={cranberryRef}
           src='/images/cranberry.png'
           alt='Cranberry'
-          className='pointer-events-none select-none absolute left-[20%] bottom-[10%] w-[120px] h-auto'
+          width={120}
+          height={120}
+          className='pointer-events-none select-none absolute left-[20%] bottom-[10%] h-auto'
         />
-        <img
+        <Image
           ref={limeRef}
           src='/images/lime.png'
           alt='Lime'
-          className='pointer-events-none select-none absolute right-[10%] bottom-[15%] w-[120px] h-auto'
+          width={120}
+          height={120}
+          className='pointer-events-none select-none absolute right-[10%] bottom-[15%] h-auto'
         />
-        <img
+        <Image
           ref={cranberryBlurredRef}
           src='/images/cranberry-blured.png'
           alt='Cranberry blurred'
-          className='pointer-events-none select-none absolute left-[-6%] bottom-[30%] w-[360px] h-auto'
+          width={360}
+          height={360}
+          className='pointer-events-none select-none absolute left-[-6%] bottom-[30%] h-auto'
         />
-        <img
+        <Image
           ref={limeBlurredRef}
           src='/images/lime-blured.png'
           alt='Lime blurred'
-          className='pointer-events-none select-none absolute right-[-6%] bottom-[50%] w-[360px] h-auto'
+          width={360}
+          height={360}
+          className='pointer-events-none select-none absolute right-[-6%] top-[30%] h-auto'
+        />
+
+        <Image
+          ref={cranberryTextRef}
+          src='/graphics/cranberry-text-red.png'
+          alt='Cranberry text'
+          width={360}
+          height={360}
+          className='pointer-events-none select-none absolute right-[-6%] top-[30%] h-auto'
+        />
+
+        <Image
+          ref={limeTextRef}
+          src='/graphics/lime-text-green.png'
+          alt='Lime text'
+          width={360}
+          height={360}
+          className='pointer-events-none select-none absolute right-[-6%] top-[30%] h-auto'
         />
       </section>
     </>

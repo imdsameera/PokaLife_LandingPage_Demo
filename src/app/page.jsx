@@ -2,12 +2,10 @@ import React from 'react';
 import { Hero } from './z-home-sections/Hero';
 import { ProductSummary } from './z-home-sections/ProductSummary';
 import { ProductVideo } from './z-home-sections/ProductVideo';
-import { SpinningBadge } from '@/components/SpinningBadge';
 
 function Home() {
   return (
     <div className=''>
-      <SpinningBadge />
       <Hero />
       <ProductSummary />
       <ProductVideo />
