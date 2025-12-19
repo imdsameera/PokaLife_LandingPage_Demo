@@ -3,6 +3,7 @@ import './globals.css';
 import Navbar from '@/components/Navbar';
 import SmoothScroll from '@/components/SmoothScroll';
 import { SpinningBadge } from '@/components/animations/SpinningBadge';
+import { PageLoader } from '@/components/PageLoader';
 
 
 const geistSans = Geist({
@@ -26,8 +27,9 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <PageLoader />
         <SmoothScroll>
-          <Navbar />
+          {/*<Navbar />*/}
           {children}
           <SpinningBadge />
         </SmoothScroll>

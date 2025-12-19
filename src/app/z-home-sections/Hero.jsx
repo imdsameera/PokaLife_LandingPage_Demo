@@ -102,7 +102,7 @@ export const Hero = () => {
           width={0}
           height={0}
           sizes='100vw'
-          style={{width: '100%', height: 'auto%' }}
+          style={{ width: '100%', height: 'auto%' }}
           className='object-cover'
         />
         <div className='absolute inset-0 bg-black/10' />
@@ -122,9 +122,9 @@ export const Hero = () => {
       >
         <div className='w-full min-h-screen flex items-center justify-center m-0 p-0'>
           <InfiniteMarquee className='text-marquee'>
-            <h1 className='text-white text-[15rem] font-medium'>Freeze.</h1>
-            <h1 className='text-white text-[15rem] font-medium'>Shake.</h1>
-            <h1 className='text-white text-[15rem] font-medium'>Drink.</h1>
+            <h1 className='text-white text-[15rem] font-medium'>Sip.</h1>
+            <h1 className='text-white text-[15rem] font-medium'>Refresh.</h1>
+            <h1 className='text-white text-[15rem] font-medium'>Live.</h1>
           </InfiniteMarquee>
         </div>
       </section>

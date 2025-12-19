@@ -22,35 +22,79 @@ export const ScrollVideoSequence = ({
   const [images, setImages] = useState([]);
   const [context, setContext] = useState(null);
 
-  // 1. Preload Images
+  // 1. Optimized Progressive Image Loading
   useEffect(() => {
-    let loadedImages = 0;
-    const imgs = [];
+    const imgs = new Array(frameCount);
+    let loadedCount = 0;
+    const ctx = canvasRef.current?.getContext('2d');
 
-    for (let i = 1; i <= frameCount; i++) {
-      const img = new Image();
-      img.src = imagePath(i);
-      img.onload = () => {
-        loadedImages++;
-        if (loadedImages === frameCount) {
-          // If all images are loaded, set the state and draw the first frame
-          setImages(imgs);
-          const ctx = canvasRef.current.getContext('2d');
-          setContext(ctx);
-          // Initial draw
-          if (imgs[0]) {
-            ctx.drawImage(
-              imgs[0],
-              0,
-              0,
-              canvasRef.current.width,
-              canvasRef.current.height
-            );
-          }
-        }
-      };
-      imgs.push(img);
+    // Priority frames to load first (every 10th frame for initial playback)
+    const priorityFrames = [];
+    for (let i = 1; i <= frameCount; i += 10) {
+      priorityFrames.push(i);
     }
+
+    // Add first and last frames to priority
+    if (!priorityFrames.includes(1)) priorityFrames.unshift(1);
+    if (!priorityFrames.includes(frameCount)) priorityFrames.push(frameCount);
+
+    const loadImage = (index) => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.src = imagePath(index);
+        img.onload = () => {
+          imgs[index - 1] = img;
+          loadedCount++;
+          resolve();
+        };
+        img.onerror = () => {
+          console.warn(`Failed to load frame ${index}`);
+          resolve();
+        };
+      });
+    };
+
+    // Load priority frames first
+    const loadPriorityFrames = async () => {
+      await Promise.all(priorityFrames.map(loadImage));
+
+      // Once priority frames are loaded, enable the canvas
+      if (ctx && imgs[0]) {
+        setContext(ctx);
+        setImages([...imgs]);
+        ctx.drawImage(
+          imgs[0],
+          0,
+          0,
+          canvasRef.current.width,
+          canvasRef.current.height
+        );
+      }
+
+      // Load remaining frames in background
+      const remainingFrames = [];
+      for (let i = 1; i <= frameCount; i++) {
+        if (!priorityFrames.includes(i)) {
+          remainingFrames.push(i);
+        }
+      }
+
+      // Load remaining frames in chunks
+      const chunkSize = 10;
+      for (let i = 0; i < remainingFrames.length; i += chunkSize) {
+        const chunk = remainingFrames.slice(i, i + chunkSize);
+        await Promise.all(chunk.map(loadImage));
+        setImages([...imgs]);
+      }
+    };
+
+    loadPriorityFrames();
+
+    return () => {
+      imgs.forEach((img) => {
+        if (img) img.src = '';
+      });
+    };
   }, []);
 
   // 2. Setup GSAP ScrollTrigger
@@ -79,8 +123,8 @@ export const ScrollVideoSequence = ({
     // Create the ScrollTrigger scoped to the Hero section
     // Pin until the center of section2Ref reaches the top of the screen
     const trigger = ScrollTrigger.create({
-        trigger: containerRef.current,
-        start: 'top top',
+      trigger: containerRef.current,
+      start: 'top top',
       end: () => {
         if (endTriggerRef?.current && containerRef.current) {
           // Calculate scroll distance until center of section2Ref reaches top of viewport
@@ -94,7 +138,7 @@ export const ScrollVideoSequence = ({
 
           const startTop = startRect.top + scrollY;
           // Calculate the center point of section2Ref
-          const endCenter = endRect.top + scrollY + (endRect.height / 2);
+          const endCenter = endRect.top + scrollY + endRect.height / 2;
 
           // Return the scroll distance needed for center of section2Ref to reach top
           return endCenter - startTop;
@@ -103,7 +147,7 @@ export const ScrollVideoSequence = ({
       },
       scrub: true,
       pin: true,
-        pinSpacing: true,
+      pinSpacing: true,
       markers: false,
       onUpdate: (self) => {
         // Progress maps to available frames
